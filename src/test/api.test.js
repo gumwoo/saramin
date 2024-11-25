@@ -1,4 +1,4 @@
-// 새로운 파일: src/tests/api.test.js
+//src/tests/api.test.js
 import request from 'supertest';
 import { app } from '../app.js';
 import mongoose from 'mongoose';

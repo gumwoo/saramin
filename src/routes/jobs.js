@@ -48,9 +48,12 @@ jobsRouter.get('/:id', async (req, res) => {
       });
     }
 
-    // 조회수 증가
-    job.views += 1;
-    await job.save();
+    // 조회수 증가 및 분석 데이터 업데이트
+    await JobAnalytics.findOneAndUpdate(
+      { job: job._id },
+      { $inc: { viewCount: 1 } },
+      { upsert: true }
+    );
 
     res.json({
       status: 'success',
@@ -89,30 +92,84 @@ jobsRouter.post('/', auth, async (req, res) => { // auth 미들웨어 적용
   }
 });
 
-// 검색 기능 추가 (jobs.js에 추가할 내용)
+// 검색 및 필터링 로직 강화
 jobsRouter.get('/search', async (req, res) => {
   try {
-    const { keyword, location, experienceLevel, salary } = req.query;
-    const query = {};
+    const {
+      keyword,
+      location,
+      experienceLevel,
+      minSalary,
+      maxSalary,
+      skills,
+      page = 1,
+      limit = 20
+    } = req.query;
 
+    const query = {};
+    const skip = (page - 1) * limit;
+
+    // 키워드 검색
     if (keyword) {
       query.$or = [
         { title: new RegExp(keyword, 'i') },
         { description: new RegExp(keyword, 'i') }
       ];
     }
-    
-    if (location) query.location = new RegExp(location, 'i');
-    if (experienceLevel) query.experienceLevel = experienceLevel;
-    if (salary) query.salary = new RegExp(salary, 'i');
+
+    // 위치 필터
+    if (location) {
+      query.location = new RegExp(location, 'i');
+    }
+
+    // 경력 필터
+    if (experienceLevel) {
+      query.experienceLevel = experienceLevel;
+    }
+
+    // 급여 범위 필터
+    if (minSalary || maxSalary) {
+      query.salary = {};
+      if (minSalary) query.salary.$gte = parseInt(minSalary);
+      if (maxSalary) query.salary.$lte = parseInt(maxSalary);
+    }
+
+    // 기술 스택 필터
+    if (skills) {
+      const skillsArray = skills.split(',').map(skill => skill.trim());
+      query.skills = { $all: skillsArray };
+    }
 
     const jobs = await Job.find(query)
       .populate('company')
+      .skip(skip)
+      .limit(limit)
       .sort({ createdAt: -1 });
+
+    const total = await Job.countDocuments(query);
+
+    // 검색 이력 저장 (인증된 사용자의 경우)
+    if (req.user) {
+      await JobSearch.create({
+        user: req.user._id,
+        keyword,
+        filters: {
+          location,
+          experienceLevel,
+          salary: `${minSalary}-${maxSalary}`,
+          skills: skills ? skills.split(',') : []
+        }
+      });
+    }
 
     res.json({
       status: 'success',
-      data: { jobs }
+      data: { jobs },
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total
+      }
     });
   } catch (error) {
     res.status(500).json({
