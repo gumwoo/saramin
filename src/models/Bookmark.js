@@ -1,4 +1,4 @@
-
+src/models/bookmarks.js
 import mongoose from 'mongoose';
 
 const bookmarkSchema = new mongoose.Schema({

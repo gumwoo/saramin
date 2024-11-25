@@ -1,4 +1,4 @@
-
+src/models/job.js
 import mongoose from 'mongoose';
 
 const jobSchema = new mongoose.Schema({

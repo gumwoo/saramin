@@ -1,4 +1,4 @@
-
+/*src/scripts/seedData.js*/
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Company from '../models/Company.js';

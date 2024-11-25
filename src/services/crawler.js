@@ -1,4 +1,4 @@
-// 새로운 파일: src/scripts/crawler.js
+// src/service/crawler.js
 import puppeteer from 'puppeteer';
 import mongoose from 'mongoose';
 import Company from '../models/Company.js';

@@ -1,3 +1,5 @@
+//src/routes/bookmarks.js
+
 import express from 'express';
 import Bookmark from '../models/Bookmark.js';
 import { auth } from '../middleware/auth.js';

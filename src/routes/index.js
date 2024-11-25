@@ -1,3 +1,5 @@
+//src/routes/index.js
+
 import express from 'express';
 import { authRouter } from './auth.js';
 import { jobsRouter } from './jobs.js';

@@ -1,3 +1,5 @@
+//src/routes/applications.js
+
 import express from 'express';
 import Application from '../models/Application.js';
 import { auth } from '../middleware/auth.js';

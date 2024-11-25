@@ -1,3 +1,5 @@
+//src/utils/errorHandler.js
+
 class AppError extends Error {
     constructor(message, statusCode) {
       super(message);
