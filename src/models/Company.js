@@ -1,4 +1,4 @@
-//src/models/applications.js
+//src/models/Company.js
 import mongoose from 'mongoose';
 
 const companySchema = new mongoose.Schema({

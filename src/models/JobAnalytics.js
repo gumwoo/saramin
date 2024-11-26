@@ -1,4 +1,4 @@
-
+//src/models/job.js
 import mongoose from 'mongoose';
 
 const jobAnalyticsSchema = new mongoose.Schema({

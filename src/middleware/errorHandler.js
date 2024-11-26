@@ -1,4 +1,4 @@
-
+//src/middleware/errorHandler.js
 import AppError from '../utils/AppError.js';
 
 export const errorHandler = (err, req, res, next) => {

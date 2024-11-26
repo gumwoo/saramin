@@ -1,4 +1,4 @@
-
+//src/crawler/jobCrawler.js
 import puppeteer from 'puppeteer';
 import { delay } from '../utils/common.js';
 import Company from '../models/Company.js';
